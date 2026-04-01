@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from models import Hero, Monster
+from models import Hero, Monster, Bonus
 
 def get_db():
     client = MongoClient("mongodb://localhost:27017/MONGO_")
@@ -26,9 +26,10 @@ def add_many_heroes(heroes_list):
 
 def get_all_heroes():
     #recuperer les heros
+    #en faire des objets Hero
     db = get_db()
-    heroes_dict = list(db["heroes"].find({}, {"_id": 0}))  # Sans l'id MongoDB
-    return [Hero(**hero) for hero in heroes_dict]  # Convertit les dicts en objets Hero
+    heroes_dict = list(db["heroes"].find({}, {"_id": 0}))
+    return [Hero(**hero) for hero in heroes_dict] 
 
 
 def add_many_monsters(monsters_list):
@@ -40,9 +41,17 @@ def add_many_monsters(monsters_list):
 
 def get_all_monsters():
     #recup els monstres
+    #en faire des objets Monstre
     db = get_db()
-    monsters_dict = list(db["monsters"].find({}, {"_id": 0}))  # Sans l'id MongoDB
-    return [Monster(**monster) for monster in monsters_dict]  # Convertit les dicts en objets Monster
+    monsters_dict = list(db["monsters"].find({}, {"_id": 0}))
+    return [Monster(**monster) for monster in monsters_dict]  
+
+def get_all_bonuses():
+    #recuperer les bonus de la db
+    #en faire des objets Bonus
+    db = get_db()
+    bonuses_dict = list(db["bonuses"].find({}, {"_id": 0}))
+    return [Bonus(**bonus) for bonus in bonuses_dict]
 
 def insert_heroes():
     heroes_list=get_db()["heroes"]

@@ -56,14 +56,15 @@ class Bonus:
         hero.hp = hero.max_hp
 
 class Chest:
-    #loot random (objet bonus) toutes les x vagues
-    #stocker tout les loots existants
+    #bonus random (objet bonus) toutes les x vagues
+    #stocker tout les bonus existants dans la db
     #randomiser le loot obtenu
     #appliquer l'effet
     def __init__(self, loot):
         self.loot=loot
 
-    """def random_loot(self):"""
+    def random_loot(self):
+        return choice(self.loot)
 
 class SpecialEvent:
     def __init__(self, nom, description, effet):
