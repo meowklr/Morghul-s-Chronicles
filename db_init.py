@@ -1,6 +1,49 @@
 from pymongo import MongoClient
 from models import Hero, Monster
 
+def get_db():
+    client = MongoClient("mongodb://localhost:27017/MONGO_")
+    db = client["game_db"]
+    return db
+
+
+def add_hero(name, hp, attack, defense):
+    #ajouter un hero
+    db = get_db()
+    heroes = db["heroes"]
+    hero = {"name": name, "hp": hp, "attack": attack, "defense": defense, "max_hp": hp}
+    result = heroes.insert_one(hero)
+    return result.inserted_id
+
+
+def add_many_heroes(heroes_list):
+    #ajouter des heros en meme temps
+    db = get_db()
+    heroes = db["heroes"]
+    result = heroes.insert_many(heroes_list)
+    return result.inserted_ids
+
+
+def get_all_heroes():
+    #recuperer les heros
+    db = get_db()
+    heroes_dict = list(db["heroes"].find({}, {"_id": 0}))  # Sans l'id MongoDB
+    return [Hero(**hero) for hero in heroes_dict]  # Convertit les dicts en objets Hero
+
+
+def add_many_monsters(monsters_list):
+    #ajouter des monstres
+    db = get_db()
+    monsters = db["monsters"]
+    result = monsters.insert_many(monsters_list)
+    return result.inserted_ids
+
+def get_all_monsters():
+    #recup els monstres
+    db = get_db()
+    monsters_dict = list(db["monsters"].find({}, {"_id": 0}))  # Sans l'id MongoDB
+    return [Monster(**monster) for monster in monsters_dict]  # Convertit les dicts en objets Monster
+
 def insert_heroes():
     heroes_list=get_db()["heroes"]
     heroes_list.insert_many([
@@ -40,46 +83,10 @@ def insert_bonuses():
         {"name": "Potion de défense", "description": "Augmente la défense de 10 points à l'un de vos héros aléatoire", "effect": "increase_defense"}
     ])
 
-def get_db():
-    client = MongoClient("mongodb://localhost:27017/MONGO_")
-    db = client["game_db"]
-    return db
-
-# AJOUTER UN HÉROS
-def add_hero(name, hp, attack, defense):
-    db = get_db()
-    heroes = db["heroes"]
-    hero = {"name": name, "hp": hp, "attack": attack, "defense": defense, "max_hp": hp}
-    result = heroes.insert_one(hero)
-    return result.inserted_id
-
-# AJOUTER PLUSIEURS HÉROS
-def add_many_heroes(heroes_list):
-    db = get_db()
-    heroes = db["heroes"]
-    result = heroes.insert_many(heroes_list)
-    return result.inserted_ids
-
-# RÉCUPÉRER TOUS LES HÉROS
-def get_all_heroes():
-    db = get_db()
-    heroes_dict = list(db["heroes"].find({}, {"_id": 0}))  # Sans l'id MongoDB
-    return [Hero(**hero) for hero in heroes_dict]  # Convertit les dicts en objets Hero
-
-
-def add_many_monsters(monsters_list):
-    db = get_db()
-    monsters = db["monsters"]
-    result = monsters.insert_many(monsters_list)
-    return result.inserted_ids
-
-def get_all_monsters():
-    db = get_db()
-    monsters_dict = list(db["monsters"].find({}, {"_id": 0}))  # Sans l'id MongoDB
-    return [Monster(**monster) for monster in monsters_dict]  # Convertit les dicts en objets Monster
-
 
 def add_to_leaderboard(name, count, team):
+    #recup db
+    #ajouter l'entrée leaderboard avec les categories nom compteur et equipe
     db = get_db()
     leaderboard = db["leaderboard"]
     entry = {
